@@ -1,7 +1,8 @@
 
 import React, { Component } from 'react';
+import { Entries } from '../api/entries';
 
-export default class AddEvent extends Component {
+export default class AddEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,20 +12,36 @@ export default class AddEvent extends Component {
     }
   }
 
-  handleChange = (event) => {
-    const field = event.target.name;
+  handleChange = (entry) => {
+    const field = entry.target.name;
 
     // we use square braces around the key `field` coz its a variable (we are setting state with a dynamic key name)
     this.setState({
-      [field]: event.target.value
+      [field]: entry.target.value
     })
   }
 
-  handleSubmit = (event) => {
-    event.preventDefault();
+  handleSubmit = (entry) => {
+    entry.preventDefault();
 
-    // TODO: Create backend Meteor methods to save created events
-    alert("Will be Saved in a little bit :)")
+    //Setting local variables from the state variables
+    const {title, description, date} = this.state
+
+    //Inserting the local variables into the mongodb entries collection
+    Entries.insert({
+      title,
+      description,
+      date
+    });
+
+    //Clear input fields on submit
+    this.setState({
+      title: "",
+      description: "",
+      date: ""
+    });
+
+    alert("Form has been submitted successfully")
   }
 
   render() {
