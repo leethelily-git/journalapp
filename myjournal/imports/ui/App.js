@@ -1,29 +1,37 @@
 import React, { Component } from 'react';
 import AddEntry from './AddEntry';
 import ListEntries from './ListEntries';
-// we import withTracker and Events into our app file
-import { withTracker } from 'meteor/react-meteor-data';
 import { Entries } from "../api/entries";
 
 // Create a new React Component `EventApp`
-class JournalApp extends Component {
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isUpdating: false,
+      entry: {}
+    }
+  }
+
+  handleEdit = (entryId) => {
+    const entry = Entries.findOne({_id: entryId});
+
+    this.setState({
+      entry,
+      isUpdating: true
+    })
+  }
+
   render() {
     return (
       <div>
-        <AddEntry />
-        <pre>DB Stuff: {JSON.stringify(this.props, null, ' ')} </pre>
-        <ListEntries {...this.props}/>  
+        <AddEntry entry={this.state.entry} isUpdating={this.state.isUpdating}/>
+        {/* <pre>DB Stuff: {JSON.stringify(this.props, null, ' ')} </pre> */}
+        <ListEntries handleEdit={this.handleEdit}/>
       </div>
     );
   }
 }
-
-// Wrap `JournalApp` with the HOC withTracker and call the new component we get `App`
-const App = withTracker(() => {
-  return {
-    entries: Entries.find({}). fetch()
-  }
-})(JournalApp);
 
 // export the component `App`
 export default App;
