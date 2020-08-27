@@ -1,21 +1,33 @@
 
 import React, { Component } from 'react';
 import { Entries } from '../api/entries';
+import { entryValidation } from '../api/entryValidation';
+import Meteor from 'meteor/meteor';
 
 export default class AddEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      entry: props.entry,
-      isUpdating: props.isUpdating
+      entry: {
+        title: "",
+        description: "",
+        date: new Date()
+      },
+      isUpdating: false
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      entry: nextProps.entry,
-      isUpdating: nextProps.isUpdating
-    });
+  componentDidUpdate(prevProps) {
+    if (prevProps.entry !== this.props.entry) {
+      this.setState({
+        entry: this.props.entry
+      });
+    }
+    if (prevProps.isUpdating !== this.props.isUpdating) {
+      this.setState({
+        isUpdating: this.props.isUpdating
+      });
+    }
   }
 
   handleChange = (entry) => {
@@ -31,35 +43,39 @@ export default class AddEntry extends Component {
 
   handleSubmit = (entry) => {
     entry.preventDefault();
+    const entryObj = this.state.entry;
+    Meteor.call('entryValidation', entryObj);
 
     //Setting local variables from the state variables
-    const { title, description, date } = this.state.entry;
+    // const { title, description, date } = this.state.entry;
 
     //Inserting the local variables into the mongodb entries collection
-    if (!this.props.isUpdating) {
-      Entries.insert({
-        title,
-        description,
-        date
-      });
-    } else {
-      Entries.update(this.state.entry._id, {
-        $set: {
-          title,
-          description,
-          date
-        }
-      });
+    // if (!this.state.isUpdating) {
+    //   Entries.insert({
+    //     title,
+    //     description,
+    //     date
+    //   });
+    //   console.log('Successful insert')
+    // } else {
+    //   Entries.update(this.state.entry._id, {
+    //     $set: {
+    //       title,
+    //       description,
+    //       date
+    //     }
+    //   });
+    //   console.log('Successful update')
       
-      this.setState({
-        isUpdating: false
-      })
-    }
+    //   this.setState({
+    //     isUpdating: false
+    //   })
+    // }
 
     const newEntry = {
       title: "",
       description: "",
-      date: ""
+      date: new Date()
     }
 
     //Clear input fields on submit
@@ -115,7 +131,7 @@ export default class AddEntry extends Component {
             <div className="form-group">
               <label>Entry Date:</label>
               <input
-                type="text"
+                type="date"
                 className="form-control"
                 placeholder="Enter date in the format mm.dd.yyyy"
                 name="date"
@@ -131,3 +147,11 @@ export default class AddEntry extends Component {
     );
   }
 }
+
+// entryValidation.call(entryObj, (err, res) => {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log(res);
+//   }
+// });

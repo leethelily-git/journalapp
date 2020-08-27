@@ -3,7 +3,7 @@ import AddEntry from './AddEntry';
 import ListEntries from './ListEntries';
 import { Entries } from "../api/entries";
 
-// Create a new React Component `EventApp`
+// Create a new React Component `App`
 class App extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +27,8 @@ class App extends Component {
       <div>
         <AddEntry entry={this.state.entry} isUpdating={this.state.isUpdating}/>
         {/* <pre>DB Stuff: {JSON.stringify(this.props, null, ' ')} </pre> */}
-        <ListEntries handleEdit={this.handleEdit}/>
+        {/* <ListEntries handleEdit={this.handleEdit}/> */}
+        <ListEntries />
       </div>
     );
   }
