@@ -3,37 +3,19 @@ import { Entries } from '../api/entries';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 
-export const ListEntries = (isSubReady) => {
+export const ListEntries = ({isSubReady}) => {
   let myEntries = [];
 
-  console.log(isSubReady);
-
-  // Entries.insert({
-  //   title: "ABC",
-  //   description: "THIS IS NEW",
-  //   date: "123"
-  // })
-
-  // Entries.insert({
-  //   title: "DEF",
-  //   description: "THIS IS NEW",
-  //   date: "123"
-  // })
-
+  //Only proceed if Sub is ready
   if (isSubReady) {
-    // Entries.insert({
-    //   title: "JEOD",
-    //   description: "IUDW",
-    //   date: "uwehdiwe"
-    // })
-    // Entries.insert({
-    //   title: "ABC",
-    //   description: "DEF",
-    //   date: "ewidj"
-    // })
+    //Sub is ready: true
+    console.log(isSubReady);
+    myEntries = Entries.find({}).fetch();
 
-    myEntries = Entries.find().fetch();
+    //Collecting entries from publication
     console.log('Collecting entries from publication')
+
+    //Display the entries in array object
     console.log(myEntries)
   }
 
@@ -55,7 +37,7 @@ export const ListEntries = (isSubReady) => {
         <div className="list-group-item list-group-item-action flex-column align-items-start">
           <div className="d-flex w-100 justify-content-between">
             <h5 className="mb-1">{entry.title}</h5>
-            <p>{entry.date}</p>
+            <p>{entry.date.toString()}</p>
           </div>
           <p className="mb-1">{entry.description}</p>
           <div className="float-right">
@@ -70,9 +52,9 @@ export const ListEntries = (isSubReady) => {
   }
 
   return (
-    {isSubReady} ?
+    isSubReady ?
     <div>
-      { this.renderEntries() }
+      { renderEntries() }
     </div>
     :
     <div>
@@ -125,8 +107,10 @@ export const ListEntries = (isSubReady) => {
 export default withTracker(() => {
   const entriesSub = Meteor.subscribe('entries.list');
   const isSubReady = entriesSub.ready();
-  console.log("IM THE TRACKER")
-  return {
-    isSubReady
+  if (isSubReady) {
+    console.log("IM THE TRACKER");
+    return {
+      isSubReady
+    }
   }
 })(ListEntries);

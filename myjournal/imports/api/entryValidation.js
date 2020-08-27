@@ -1,4 +1,4 @@
-import { SimpleSchema } from 'simpl-schema';
+import SimpleSchema from 'simpl-schema';
 import entries, { Entries } from './entries';
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
@@ -15,6 +15,7 @@ export const entryValidation = new ValidatedMethod({
       Entries.insert({
         entryObj
       });
+      console.log("Successful insert")
     }
 })
 

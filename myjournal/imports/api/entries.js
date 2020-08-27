@@ -1,6 +1,5 @@
 import { Mongo } from 'meteor/mongo';
 import { Meteor } from 'meteor/meteor';
-import SimpleSchema from 'simpl-schema';
 
 // Creates a new Mongo collections and exports it
 export const Entries = new Mongo.Collection('entries');
@@ -38,9 +37,8 @@ Entries.allow({
 
 if (Meteor.isServer) {
   Meteor.publish('entries.list', function() {
-    this.ready();
     return Entries.find({
-      title: "ABC"
+      // title: "DEF"
     });
   });
 }
